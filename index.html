@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Pléno</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        /* css reset pro chudý */
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        color: white;
+        font-family: "Titillium Web", sans-serif;
+      }
+
+      a {
+        color: white;
+      }
+
+      :root {
+        --header-color: black;
+        --video-color: hsl(186, 52%, 67%);
+        --chat-color: white;
+        --footer-color: black;
+        --header-size: 42px;
+      }
+
+      main {
+        background-color: gainsboro;
+        height: 100%;
+        display: grid;
+        grid-template-columns: minmax(600px, 3fr) minmax(300px, 1fr);
+        grid-template-rows: 0fr 1fr;
+        grid-template-areas:
+          "header header"
+          "video chat";
+      }
+
+      @media (max-width: 900px) {
+        main {
+          grid-template-columns: 1fr;
+          grid-template-rows: 0fr 3fr 1fr;
+          grid-template-areas:
+            "header"
+            "video"
+            "chat";
+        }
+      }
+
+      .header {
+        background-color: var(--header-color);
+        grid-area: header;
+        padding: 0 24px;
+        display: grid;
+        grid-auto-rows: 1fr;
+        grid-template-areas: "header footer";
+      }
+
+      .header header {
+        grid-area: header;
+      }
+
+      .header footer {
+        text-align: right;
+        grid-area: footer;
+        padding: 12px 0;
+      }
+
+      footer img {
+        width: 32px;
+        height: 32px;
+        filter: invert(1);
+      }
+
+      footer a {
+        display: block;
+      }
+
+      .header h1,
+      .header h2 {
+        display: inline-block;
+      }
+
+      .header h2 {
+        font-size: 1rem;
+      }
+
+      .video {
+        background-color: var(--video-color);
+        grid-area: video;
+        position: relative;
+      }
+
+      #video {
+        width: 100%;
+        height: 100%;
+      }
+
+      .chat {
+        background-color: var(--chat-color);
+        grid-area: chat;
+        overflow-y: scroll;
+      }
+
+      .video-js {
+        width: 100%;
+        height: 100%;
+      }
+
+      .video.muted .video-js video {
+        filter: blur(10px);
+      }
+
+      .muted-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        text-align: center;
+        color: white;
+        z-index: 1;
+        display: none;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        justify-content: center;
+      }
+
+      .muted-overlay .muted-text {
+        align-self: center;
+      }
+
+      .video.muted .muted-overlay {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="header">
+        <header>
+          <h1>Pléno</h1>
+          <h2>nějáký vysvětlovací pindy</h2>
+        </header>
+        <footer>
+          <a
+            href="http://github.com/rubyelders/pleno"
+            target="_blank"
+            alt="built by RubyElders"
+            ><img src="https://rubyelders.com/img/favicon.png"
+          /></a>
+        </footer>
+      </div>
+      <div class="video">
+        <div class="muted-overlay">
+          <div class="muted-text">
+            Ztlumeno<br />(klikněte pro aktivaci zvuku)
+          </div>
+        </div>
+        <video
+          id="video"
+          class="video-js vjs-default-skin vjs-big-play-centered"
+          controls
+        >
+          <source
+            src="https://pspcr-ott-live.ssl.cdn.cra.cz/channels/ps-stream1/playlist/cze.m3u8"
+            type="application/x-mpegURL"
+          />
+        </video>
+      </div>
+      <div class="chat">
+        <a
+          class="twitter-timeline"
+          href="https://twitter.com/retrorubies?ref_src=twsrc%5Etfw"
+          >Tweets by retrorubies</a
+        >
+        <script
+          async
+          src="https://platform.twitter.com/widgets.js"
+          charset="utf-8"
+        ></script>
+      </div>
+      <div class="footer"></div>
+    </main>
+
+    <link
+      href="https://unpkg.com/video.js/dist/video-js.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script>
+      let player = videojs("video");
+      let $video = document.querySelector(".video");
+      let $overlay = document.querySelector(".muted-overlay");
+
+      $overlay.addEventListener("click", (e) => {
+        player.muted(false);
+        player.volume(1.0);
+      });
+
+      player.on("volumechange", (e) => {
+        if (player.muted() || player.volume() == 0.0) {
+          $video.classList.add("muted");
+        } else {
+          $video.classList.remove("muted");
+        }
+      });
+
+      player.autoplay("any");
+    </script>
+  </body>
+</html>
